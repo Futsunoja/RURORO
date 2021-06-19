@@ -6,10 +6,11 @@ public class MapMove : MonoBehaviour
     public GameObject[] map;
     public GameObject[] pla;
     public GameObject place, intro;
+    public GameObject MapManu, Girl, go, tra, forg, sav, loa, backmenu;
     float i = 4;
     public int[] j;
     int k;
-    bool l;
+    bool l, m;
 
     private void Start()
     {
@@ -18,38 +19,50 @@ public class MapMove : MonoBehaviour
         pla[0].SetActive(true);
         pla[1].SetActive(false);
         Place();
-
+        m = true;
+        go.GetComponent<Image>().color = Color.green;
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A) && l == false)
+        mapManu();
+        
+        if (Input.GetKeyDown(KeyCode.K) && m == true)
         {
-            pla[0].SetActive(true);
-            pla[1].SetActive(false);
-            l = true;
+            m = false;
         }
-        if (Input.GetKeyDown(KeyCode.D) && l == false)
+
+        if (m == false)
         {
-            pla[0].SetActive(false);
-            pla[1].SetActive(true);
-            l = true;
+            if (Input.GetKeyDown(KeyCode.A) && l == false)
+            {
+                pla[0].SetActive(true);
+                pla[1].SetActive(false);
+                l = true;
+            }
+            if (Input.GetKeyDown(KeyCode.D) && l == false)
+            {
+                pla[0].SetActive(false);
+                pla[1].SetActive(true);
+                l = true;
+            }
+            m0();
+            m1();
+            m2();
+            m3();
+            m4();
+            m5();
+            m6();
+            m7();
+            m8();
+            m9();
+            m10();
+            m11();
+            m12();
+            m13();
+            m14();
         }
-        m0();
-        m1();
-        m2();
-        m3();
-        m4();
-        m5();
-        m6();
-        m7();
-        m8();
-        m9();
-        m10();
-        m11();
-        m12();
-        m13();
-        m14();
+
         if(j[0] == 0 && j[1] == 0 && j[2] == 0 && j[3] == 0 && j[4] == 0 && j[5] == 0 && j[6] == 0 && j[7] == 0 && j[8] == 0 && j[9] == 0 && j[10] == 0 && j[11] == 0 && j[12] == 0 && j[13] == 0 && j[14] == 0)
         {
             l = false;
@@ -561,6 +574,124 @@ public class MapMove : MonoBehaviour
             {
                 j[14] = 0;
             }
+        }
+    }
+
+    private void mapManu()
+    {
+        if (m == true)
+        {
+            MapManu.SetActive(true);
+            if (Input.GetKeyDown(KeyCode.W))
+            {
+                if (go.GetComponent<Image>().color == Color.green)
+                {
+                    go.GetComponent<Image>().color = Color.white;
+                    forg.GetComponent<Image>().color = Color.green;
+                }
+                else if (forg.GetComponent<Image>().color == Color.green)
+                {
+                    forg.GetComponent<Image>().color = Color.white;
+                    tra.GetComponent<Image>().color = Color.green;
+                }
+                else if (tra.GetComponent<Image>().color == Color.green)
+                {
+                    tra.GetComponent<Image>().color = Color.white;
+                    go.GetComponent<Image>().color = Color.green;
+                }
+                else if (sav.GetComponent<Image>().color == Color.green)
+                {
+                    sav.GetComponent<Image>().color = Color.white;
+                    backmenu.GetComponent<Image>().color = Color.green;
+                }
+                else if (backmenu.GetComponent<Image>().color == Color.green)
+                {
+                    backmenu.GetComponent<Image>().color = Color.white;
+                    loa.GetComponent<Image>().color = Color.green;
+                }
+                else if (loa.GetComponent<Image>().color == Color.green)
+                {
+                    loa.GetComponent<Image>().color = Color.white;
+                    sav.GetComponent<Image>().color = Color.green;
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.S))
+            {
+                if (go.GetComponent<Image>().color == Color.green)
+                {
+                    go.GetComponent<Image>().color = Color.white;
+                    tra.GetComponent<Image>().color = Color.green;
+                }
+                else if (forg.GetComponent<Image>().color == Color.green)
+                {
+                    forg.GetComponent<Image>().color = Color.white;
+                    go.GetComponent<Image>().color = Color.green;
+                }
+                else if (tra.GetComponent<Image>().color == Color.green)
+                {
+                    tra.GetComponent<Image>().color = Color.white;
+                    forg.GetComponent<Image>().color = Color.green;
+                }
+                else if (sav.GetComponent<Image>().color == Color.green)
+                {
+                    sav.GetComponent<Image>().color = Color.white;
+                    loa.GetComponent<Image>().color = Color.green;
+                }
+                else if (backmenu.GetComponent<Image>().color == Color.green)
+                {
+                    backmenu.GetComponent<Image>().color = Color.white;
+                    sav.GetComponent<Image>().color = Color.green;
+                }
+                else if (loa.GetComponent<Image>().color == Color.green)
+                {
+                    loa.GetComponent<Image>().color = Color.white;
+                    backmenu.GetComponent<Image>().color = Color.green;
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.A))
+            {
+                if (go.GetComponent<Image>().color == Color.green)
+                {
+                    go.GetComponent<Image>().color = Color.white;
+                    sav.GetComponent<Image>().color = Color.green;
+                }
+                else if (forg.GetComponent<Image>().color == Color.green)
+                {
+                    forg.GetComponent<Image>().color = Color.white;
+                    backmenu.GetComponent<Image>().color = Color.green;
+                }
+                else if (tra.GetComponent<Image>().color == Color.green)
+                {
+                    tra.GetComponent<Image>().color = Color.white;
+                    loa.GetComponent<Image>().color = Color.green;
+                }
+                else if (sav.GetComponent<Image>().color == Color.green)
+                {
+                    sav.GetComponent<Image>().color = Color.white;
+                    go.GetComponent<Image>().color = Color.green;
+                }
+                else if (backmenu.GetComponent<Image>().color == Color.green)
+                {
+                    backmenu.GetComponent<Image>().color = Color.white;
+                    forg.GetComponent<Image>().color = Color.green;
+                }
+                else if (loa.GetComponent<Image>().color == Color.green)
+                {
+                    loa.GetComponent<Image>().color = Color.white;
+                    tra.GetComponent<Image>().color = Color.green;
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.J))
+            {
+                if (go.GetComponent<Image>().color == Color.green)
+                {
+                    m = false;
+                }
+            }
+        }
+        else if(m == false)
+        {
+            MapManu.SetActive(false);
         }
     }
 

@@ -2890,7 +2890,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 1, b: 0, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -3130,6 +3130,14 @@ MonoBehaviour:
   - {fileID: 748715075}
   place: {fileID: 1157359693}
   intro: {fileID: 107281816}
+  MapManu: {fileID: 1075996835}
+  Girl: {fileID: 922369534}
+  go: {fileID: 1840569834}
+  tra: {fileID: 87347111}
+  forg: {fileID: 1145346444}
+  sav: {fileID: 1488033805}
+  loa: {fileID: 179140522}
+  backmenu: {fileID: 136537412}
   j: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 --- !u!212 &2103975638
 SpriteRenderer:
