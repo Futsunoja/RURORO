@@ -1,39 +1,51 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using System.Linq;
+using System.Collections.Generic;
 
 public class MapMove : MonoBehaviour
 {
     public GameObject[] map;
     public GameObject[] pla;
+    public GameObject[] tintro;
     public GameObject place, intro;
     public GameObject MapManu, Girl, go, tra, forg, sav, loa, backmenu;
     float i = 4;
     public int[] j;
-    int k;
+    int loaMap;
     bool l, m;
 
     private void Start()
     {
-        k = 1;  //讀取地圖編號
-        transform.position = map[k].transform.position;
-        pla[0].SetActive(true);
+        loaMap = 1;                                                                    //讀取玩家檔案的地圖編號
+        transform.position = map[loaMap].transform.position;                           //初始畫面，玩家位置
+        place.GetComponent<Text>().text = map[loaMap].name;                            //初始畫面，地圖名稱
+        intro.GetComponent<Text>().text = tintro[loaMap].GetComponent<Text>().text;    //初始畫面，地圖介紹
+        pla[0].SetActive(true);                                                        //初始畫面，指標朝左
         pla[1].SetActive(false);
-        Place();
-        m = true;
+        m = true;                                                                      //初始畫面，小女孩介面打開
         go.GetComponent<Image>().color = Color.green;
     }
 
     private void Update()
     {
-        mapManu();
-        
-        if (Input.GetKeyDown(KeyCode.K) && m == true)
+        List<int> jList = j.ToList();      //將J陣列轉化為Lisk
+        var k = jList.Where(x => x != 0);  //變數k = JLisk中符合條件的元素 (x => x 條件)
+        if (k.ToList().Count > 0)          //將符合條件的元素組成新的List，count (元素數量)
         {
-            m = false;
+            place.GetComponent<Text>().text = "";
+            intro.GetComponent<Text>().text = "";
         }
 
-        if (m == false)
+        mapManu();
+
+        if (m == false)  //小女孩介面關掉時
         {
+            if (k.ToList().Count == 0)
+            {
+                l = false;
+            }
             if (Input.GetKeyDown(KeyCode.A) && l == false)
             {
                 pla[0].SetActive(true);
@@ -46,6 +58,18 @@ public class MapMove : MonoBehaviour
                 pla[1].SetActive(true);
                 l = true;
             }
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                m = true;
+            }
+            if (Input.GetKeyDown(KeyCode.J))
+            {
+                if (transform.position == map[14].transform.position)
+                {
+                    SceneManager.LoadScene("戰鬥畫面");
+                }
+            }
+            #region 座標操作
             m0();
             m1();
             m2();
@@ -61,21 +85,19 @@ public class MapMove : MonoBehaviour
             m12();
             m13();
             m14();
-        }
-
-        if(j[0] == 0 && j[1] == 0 && j[2] == 0 && j[3] == 0 && j[4] == 0 && j[5] == 0 && j[6] == 0 && j[7] == 0 && j[8] == 0 && j[9] == 0 && j[10] == 0 && j[11] == 0 && j[12] == 0 && j[13] == 0 && j[14] == 0)
-        {
-            l = false;
+            #endregion
         }
     }
-        
 
 
+    #region 座標
     private void m0()
     {
         float step = i * Time.deltaTime;
         if (transform.position == map[0].transform.position)
         {
+            place.GetComponent<Text>().text = map[0].name;
+            intro.GetComponent<Text>().text = tintro[0].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.A))
             {
                 j[0] = 1;
@@ -87,7 +109,6 @@ public class MapMove : MonoBehaviour
             if (transform.position == map[1].transform.position)
             {
                 j[0] = 0;
-                l = false;
             }
         }
     }
@@ -97,6 +118,8 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[1].transform.position)
         {
+            place.GetComponent<Text>().text = map[1].name;
+            intro.GetComponent<Text>().text = tintro[1].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.D))
             {
                 j[1] = 1;
@@ -170,6 +193,8 @@ public class MapMove : MonoBehaviour
         float speed = i * Time.deltaTime;
         if (transform.position == map[2].transform.position)
         {
+            place.GetComponent<Text>().text = map[2].name;
+            intro.GetComponent<Text>().text = tintro[2].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.W))
             {
                 j[2] = 1;
@@ -190,6 +215,8 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[3].transform.position)
         {
+            place.GetComponent<Text>().text = map[3].name;
+            intro.GetComponent<Text>().text = tintro[3].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.S))
             {
                 j[3] = 1;
@@ -226,6 +253,8 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[4].transform.position)
         {
+            place.GetComponent<Text>().text = map[4].name;
+            intro.GetComponent<Text>().text = tintro[4].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.D))
             {
                 j[4] = 1;
@@ -270,6 +299,8 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[5].transform.position)
         {
+            place.GetComponent<Text>().text = map[5].name;
+            intro.GetComponent<Text>().text = tintro[5].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.S))
             {
                 j[5] = 1;
@@ -302,6 +333,8 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[6].transform.position)
         {
+            place.GetComponent<Text>().text = map[6].name;
+            intro.GetComponent<Text>().text = tintro[6].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.S))
             {
                 j[6] = 1;
@@ -322,6 +355,8 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[7].transform.position)
         {
+            place.GetComponent<Text>().text = map[7].name;
+            intro.GetComponent<Text>().text = tintro[7].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.D))
             {
                 j[7] = 1;
@@ -366,6 +401,8 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[8].transform.position)
         {
+            place.GetComponent<Text>().text = map[8].name;
+            intro.GetComponent<Text>().text = tintro[8].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.D))
             {
                 j[8] = 1;
@@ -398,6 +435,8 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[9].transform.position)
         {
+            place.GetComponent<Text>().text = map[9].name;
+            intro.GetComponent<Text>().text = tintro[9].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.D))
             {
                 j[9] = 1;
@@ -418,6 +457,8 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[10].transform.position)
         {
+            place.GetComponent<Text>().text = map[10].name;
+            intro.GetComponent<Text>().text = tintro[10].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.W))
             {
                 j[10] = 1;
@@ -462,6 +503,8 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[11].transform.position)
         {
+            place.GetComponent<Text>().text = map[11].name;
+            intro.GetComponent<Text>().text = tintro[11].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.A))
             {
                 j[11] = 1;
@@ -502,6 +545,8 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[12].transform.position)
         {
+            place.GetComponent<Text>().text = map[12].name;
+            intro.GetComponent<Text>().text = tintro[12].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.A))
             {
                 j[12] = 1;
@@ -530,6 +575,8 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[13].transform.position)
         {
+            place.GetComponent<Text>().text = map[13].name;
+            intro.GetComponent<Text>().text = tintro[13].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.D))
             {
                 j[13] = 1;
@@ -562,6 +609,8 @@ public class MapMove : MonoBehaviour
         float step = i * Time.deltaTime;
         if (transform.position == map[14].transform.position)
         {
+            place.GetComponent<Text>().text = map[14].name;
+            intro.GetComponent<Text>().text = tintro[14].GetComponent<Text>().text;
             if (Input.GetKeyDown(KeyCode.D))
             {
                 j[14] = 1;
@@ -576,6 +625,7 @@ public class MapMove : MonoBehaviour
             }
         }
     }
+    #endregion
 
     private void mapManu()
     {
@@ -687,21 +737,16 @@ public class MapMove : MonoBehaviour
                 {
                     m = false;
                 }
+                if (backmenu.GetComponent<Image>().color == Color.green)
+                {
+                    SceneManager.LoadScene("主畫面");
+                }
             }
         }
         else if(m == false)
         {
             MapManu.SetActive(false);
         }
-    }
-
-    private void Place()
-    {
-        if (transform.position == map[1].transform.position)
-        {
-            place.GetComponent<Text>().text = "王城";
-        }
-        
     }
 
     //   private void TEST()

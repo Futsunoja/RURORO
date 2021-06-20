@@ -611,7 +611,7 @@ GameObject:
   - component: {fileID: 1708540598}
   - component: {fileID: 1708540599}
   m_Layer: 0
-  m_Name: GameMasager
+  m_Name: MenuMasager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -644,9 +644,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pig: {fileID: 2018032950}
-  T: {x: -2, y: -0.8, z: 0}
-  C: {x: -2, y: -2, z: 0}
-  Q: {x: -2, y: -3.2, z: 0}
 --- !u!1 &1824134660
 GameObject:
   m_ObjectHideFlags: 0
