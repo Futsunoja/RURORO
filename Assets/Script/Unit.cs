@@ -8,9 +8,22 @@ public class Unit : MonoBehaviour
     public int unitLevel;
     public int atk;
     public int def;
-    public int maxHp;
-    public int currentHp;
+    public float maxHp;
+    public float currentHp;
     public int maxSp;
     public int currySp;
     public int speed;
+
+    public bool TakeDamage(int dmg)
+    {
+        currentHp -= dmg;
+        if (currentHp <= 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }
