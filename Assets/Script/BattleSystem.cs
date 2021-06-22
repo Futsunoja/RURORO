@@ -45,6 +45,7 @@ public class BattleSystem : MonoBehaviour
         PlayerOriAtk = playerUnit.atk;
         PlayerOriDef = playerUnit.def;
         state = BattleState.START;
+        BattleMessage.GetComponent<Text>().text = "遭遇了" + enemyUnit.unitName;
         ReSet();
         SetupBattle();
     }
@@ -122,6 +123,7 @@ public class BattleSystem : MonoBehaviour
                 c1.transform.localPosition = Vector3.MoveTowards(c1.transform.localPosition, o, step);
                 if (c1.transform.localPosition == o)
                 {
+                    BattleMessage.GetComponent<Text>().text = "請選擇行動";
                     i7 = true;
                 }
             }
@@ -254,7 +256,7 @@ public class BattleSystem : MonoBehaviour
                         else if(enemyUnit.unitName == "巨龍")
                         {
                             i8 = false;
-                            BattleMessage.GetComponent<Text>().text = "無法逃跑";
+                            BattleMessage.GetComponent<Text>().text = "無法逃跑\n 請選擇其他行動";
                         }
                     }
                 }
@@ -569,7 +571,7 @@ public class BattleSystem : MonoBehaviour
         #region 03_三連擊
         if (SkillNum == 3)
         {
-            print("三連擊");
+            BattleMessage.GetComponent<Text>().text = playerUnit.unitName + "使用了三連擊";
             
             for(int i = 1; i <= 3; i++)
             {
@@ -577,16 +579,9 @@ public class BattleSystem : MonoBehaviour
                 float k = Random.Range(playerUnit.atk, playerUnit.atk * 1.5f) - enemyUnit.def;
                 int hit = (int)k;
                 enemyUnit.TakeDamage(hit);
-                EnemyHp.transform.localPosition = new Vector3(4.02f * (enemyUnit.maxHp - enemyUnit.currentHp) / enemyUnit.maxHp, 0, 0);
-                if (enemyUnit.currentHp <= 0)
-                {
-                    enemyHp.text = 0 + "/" + enemyUnit.maxHp.ToString();
-                    break;
-                }
-                else
-                {
-                    enemyHp.text = enemyUnit.currentHp.ToString() + "/" + enemyUnit.maxHp.ToString();
-                }
+                EnemyDamageHpSettle();
+                yield return new WaitForSeconds(1f);
+                BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "受到了" + hit + "點傷害";
             }
 
             bool isDead = enemyUnit.TakeDamage(0);
@@ -594,6 +589,7 @@ public class BattleSystem : MonoBehaviour
 
             if (isDead)
             {
+                BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "倒下了";
                 state = BattleState.WON;
                 EndBattle();
             }
@@ -712,7 +708,6 @@ public class BattleSystem : MonoBehaviour
         UPCOUNT();
         StartCoroutine(POISONCOUNT());
         yield return new WaitForSeconds(1f);
-        BattleMessage.GetComponent<Text>().text = "";
         print("本輪結束");
         ReSet();
         print("count" + UPcount);
