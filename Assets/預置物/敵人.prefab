@@ -46,10 +46,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitName: "\u5DE8\u9F8D"
   unitLevel: 25
-  atk: 50
+  atk: 80
   def: 20
   maxHp: 250
-  currentHp: 250
+  currentHp: 50
   maxSp: 50
   currySp: 50
   speed: 20
