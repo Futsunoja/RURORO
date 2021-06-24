@@ -49,9 +49,9 @@ MonoBehaviour:
   atk: 80
   def: 20
   maxHp: 250
-  currentHp: 50
-  maxSp: 50
-  currySp: 50
+  currentHp: 250
+  maxSkillPower: 0
+  currySkillPower: 0
   speed: 20
 --- !u!1 &5899338023891782732
 GameObject:

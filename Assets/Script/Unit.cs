@@ -8,8 +8,8 @@ public class Unit : MonoBehaviour
     public int def;
     public float maxHp;
     public float currentHp;
-    public int maxSp;
-    public int currySp;
+    public int maxSkillPower;
+    public int currySkillPower;
     public int speed;
 
     public bool TakeDamage(int dmg)

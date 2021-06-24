@@ -131,6 +131,6 @@ MonoBehaviour:
   def: 20
   maxHp: 200
   currentHp: 200
-  maxSp: 50
-  currySp: 50
+  maxSkillPower: 5
+  currySkillPower: 5
   speed: 25

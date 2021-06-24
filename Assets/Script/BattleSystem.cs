@@ -9,7 +9,7 @@ public enum BattleState { START, CHOOSEACTION,PLAYERTURN, ENEMYTURN, ENDTRUN, WO
 public class BattleSystem : MonoBehaviour
 {
     public GameObject c1, c2, c3, c4;
-    bool i0, i1, i2, i3, i4, i5, i6, i7, i8, i9,ispr1, ispr2, ispr3;
+    bool i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, ispr1, ispr2, ispr3, ispr01, ispr02, ispr03;
     Vector3 c = new Vector3(-2.7f, 0, 0);
     Vector3 o = new Vector3(0.4f, 0, 0);
     public Sprite spr11, spr12, spr13, spr14, spr21, spr22, spr23, spr24, spr31, spr32, spr33, spr34;
@@ -20,6 +20,7 @@ public class BattleSystem : MonoBehaviour
     public GameObject BattleMessage;
     public GameObject SkillItemName;
     public GameObject SkillItemEffect;
+    public GameObject[] SkillPower;
 
     public Transform playerBattleStation;
     public Transform enemyBattleStation;
@@ -68,6 +69,12 @@ public class BattleSystem : MonoBehaviour
         PlayerHp.transform.localPosition = new Vector3(-4.02f * (playerUnit.maxHp - playerUnit.currentHp) / playerUnit.maxHp, 0, 0);
         EnemyHp.transform.localPosition = new Vector3(4.02f * (enemyUnit.maxHp - enemyUnit.currentHp) / enemyUnit.maxHp, 0, 0);
 
+        for(int i = 0; i <= 4; i++)
+        {
+            SkillPower[i].SetActive(false);
+        }
+        SkillPower[5].SetActive(true);
+
         state = BattleState.CHOOSEACTION;
         ChooseAction();
     }
@@ -94,14 +101,7 @@ public class BattleSystem : MonoBehaviour
         SpriteRenderer c4spr = c4.GetComponent<SpriteRenderer>();
         float step = 6 * Time.deltaTime;
 
-        if (c4spr.sprite == spr14 && enemyUnit.unitName == "巨龍")
-        {
-            c4.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1);
-        }
-        else
-        {
-            c4.GetComponent<SpriteRenderer>().color = Color.white;
-        }
+        CanNatUse();
 
         if (i7 == false)
         {
@@ -128,6 +128,13 @@ public class BattleSystem : MonoBehaviour
                 if (c1.transform.localPosition == o)
                 {
                     i7 = true;
+                    SkillPower[playerUnit.currySkillPower].SetActive(false);
+                    playerUnit.currySkillPower++;
+                    if (playerUnit.currySkillPower >= 5)
+                    {
+                        playerUnit.currySkillPower = 5;
+                    }
+                    SkillPower[playerUnit.currySkillPower].SetActive(true);
                 }
             }
         }
@@ -199,10 +206,14 @@ public class BattleSystem : MonoBehaviour
         }
         if (ispr1 == true && ispr2 == false && ispr3 == false)
         {
-            if (c1.transform.localPosition == o || c2.transform.localPosition == o || c3.transform.localPosition == o || c4.transform.localPosition == o)
+            if (c1.transform.localPosition == o || c2.transform.localPosition == o || c3.transform.localPosition == o)
             {
                 BattleMessage.SetActive(true);
                 BattleMessage.GetComponent<Text>().text = "請選擇行動";
+            }
+            if (c4.transform.localPosition == o)
+            {
+                BattleMessage.GetComponent<Text>().text = "無法逃跑\n 請選擇其他行動";
             }
         }
         if (ispr1 == false && ispr2 == true && ispr3 == false)
@@ -259,20 +270,15 @@ public class BattleSystem : MonoBehaviour
 
     private void CAD()    //選擇行動
     {
+        i8 = false;
+        print("i"+(i5,i6,i7,i8,i9)+"ispr"+(ispr1,ispr2,ispr3));
         SpriteRenderer c1spr = c1.GetComponent<SpriteRenderer>();
         SpriteRenderer c2spr = c2.GetComponent<SpriteRenderer>();
         SpriteRenderer c3spr = c3.GetComponent<SpriteRenderer>();
         SpriteRenderer c4spr = c4.GetComponent<SpriteRenderer>();
         float step = 6 * Time.deltaTime;
 
-        if (c4spr.sprite == spr14 && enemyUnit.unitName == "巨龍")
-        {
-            c4.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1);
-        }
-        else
-        {
-            c4.GetComponent<SpriteRenderer>().color = Color.white;
-        }
+        CanNatUse();
 
         if (Input.GetKeyDown(KeyCode.J) && i8 == false)
         {
@@ -294,14 +300,14 @@ public class BattleSystem : MonoBehaviour
                 {
                     BattleMessage.SetActive(false);
                     ispr1 = false;
-                    ispr2 = true;
+                    ispr02 = true;
                     i0 = true;
                 }
                 if (c3.transform.localPosition == o)
                 {
                     BattleMessage.SetActive(false);
                     ispr1 = false;
-                    ispr3 = true;
+                    ispr03 = true;
                     i0 = true;
                 }
                 if (c4.transform.localPosition == o)
@@ -318,36 +324,71 @@ public class BattleSystem : MonoBehaviour
                         }
                         else if(enemyUnit.unitName == "巨龍")
                         {
-                            i8 = false;
-                            BattleMessage.GetComponent<Text>().text = "無法逃跑\n 請選擇其他行動";
+                            CAD();
                         }
                     }
                 }
             }
-            else if (ispr2 == true)    //技能選項
+            if (ispr2 == true)    //技能選項
             {
                 ispr2 = false;
                 i6 = true;
                 state = BattleState.PLAYERTURN;
-                if (c1.transform.localPosition == o)
+                if (c1.transform.localPosition == o && playerUnit.currySkillPower >= 2)
                 {
                     StartCoroutine(AttackSkill(c1.GetComponent<SpriteRenderer>().sprite.name));
+                    SkillItemName.SetActive(false);
+                    SkillItemEffect.SetActive(false);
+                    i0 = true;
                 }
-                if (c2.transform.localPosition == o)
+                else if(c1.transform.localPosition == o && playerUnit.currySkillPower < 3)
+                {
+                    ispr2 = true;
+                    i6 = false;
+                    i0 = false;
+                }
+                if (c2.transform.localPosition == o && playerUnit.currySkillPower >= 1)
                 {
                     StartCoroutine(AttackSkill(c2.GetComponent<SpriteRenderer>().sprite.name));
+                    SkillItemName.SetActive(false);
+                    SkillItemEffect.SetActive(false);
+                    i0 = true;
                 }
-                if (c3.transform.localPosition == o)
+                else if (c2.transform.localPosition == o && playerUnit.currySkillPower < 1)
+                {
+                    ispr2 = true;
+                    i6 = false;
+                    i0 = false;
+                }
+                if (c3.transform.localPosition == o && playerUnit.currySkillPower >= 3)
                 {
                     StartCoroutine(AttackSkill(c3.GetComponent<SpriteRenderer>().sprite.name));
+                    SkillItemName.SetActive(false);
+                    SkillItemEffect.SetActive(false);
+                    i0 = true;
                 }
-                if (c4.transform.localPosition == o)
+                else if (c3.transform.localPosition == o && playerUnit.currySkillPower < 3)
+                {
+                    ispr2 = true;
+                    i6 = false;
+                    i0 = false;
+                }
+                if (c4.transform.localPosition == o && playerUnit.currySkillPower >= 3)
                 {
                     StartCoroutine(AttackSkill(c4.GetComponent<SpriteRenderer>().sprite.name));
+                    SkillItemName.SetActive(false);
+                    SkillItemEffect.SetActive(false);
+                    i0 = true;
                 }
-                i0 = true;
+                else if (c4.transform.localPosition == o && playerUnit.currySkillPower < 3)
+                {
+                    ispr2 = true;
+                    i6 = false;
+                    i0 = false;
+                }
+
             }
-            else if (ispr3 == true)    //道具選項
+            if (ispr3 == true)    //道具選項
             {
                 ispr3 = false;
                 i6 = true;
@@ -366,7 +407,7 @@ public class BattleSystem : MonoBehaviour
             {
                 SkillItemName.SetActive(false);
                 SkillItemEffect.SetActive(false);
-                ispr1 = true;
+                ispr01 = true;
                 ispr2 = false;
                 ispr3 = false;
                 i0 = true;
@@ -443,22 +484,28 @@ public class BattleSystem : MonoBehaviour
                     c4.transform.localPosition = Vector3.MoveTowards(c4.transform.localPosition, c, step);
                     if (c4.transform.localPosition == c)
                     {
-                        if (ispr1 == true)
+                        if (ispr01 == true)
                         {
+                            ispr01 = false;
+                            ispr1 = true;
                             c1spr.sprite = spr11;
                             c2spr.sprite = spr12;
                             c3spr.sprite = spr13;
                             c4spr.sprite = spr14;
                         }
-                        if (ispr2 == true)
+                        if (ispr02 == true)
                         {
+                            ispr02 = false;
+                            ispr2 = true;
                             c1spr.sprite = spr21;
                             c2spr.sprite = spr22;
                             c3spr.sprite = spr23;
                             c4spr.sprite = spr24;
                         }
-                        if (ispr3 == true)
+                        if (ispr03 == true)
                         {
+                            ispr03 = false;
+                            ispr3 = true;
                             c1spr.sprite = spr31;
                             c2spr.sprite = spr32;
                             c3spr.sprite = spr33;
@@ -488,7 +535,7 @@ public class BattleSystem : MonoBehaviour
                     if (c1.transform.localPosition == o)
                     {
                         i1 = true;
-                        i5 = true;
+                        i5 = false;
                         i0 = false;
                         i8 = false;
                     }
@@ -561,6 +608,7 @@ public class BattleSystem : MonoBehaviour
     IEnumerator AttackSkill(string SKILLNAME)    //玩家攻擊
     {
         yield return new WaitForSeconds(1f);
+        BattleMessage.SetActive(true);
         BattleMessage.GetComponent<Text>().text = playerUnit.unitName + "施展了" + SKILLNAME;
 
         #region 00_普通攻擊
@@ -580,6 +628,8 @@ public class BattleSystem : MonoBehaviour
         #region 01_狂擊
         if (SKILLNAME == "狂擊")
         {
+            SkillPowerExpend(2);
+
             int hit = 2 * playerUnit.atk - enemyUnit.def;
             EnemyIsDead = enemyUnit.TakeDamage(hit);
             EnemyDamageHpSettle();
@@ -594,6 +644,8 @@ public class BattleSystem : MonoBehaviour
         #region 02_高級強化
         if (SKILLNAME == "高級強化")
         {
+            SkillPowerExpend(1);
+
             playerUnit.atk += 15;
             playerUnit.def += 10;
             UPcount = 3;
@@ -610,7 +662,9 @@ public class BattleSystem : MonoBehaviour
         #region 03_三連擊
         if (SKILLNAME == "三連擊")
         {
-            for(int i = 1; i <= 3; i++)
+            SkillPowerExpend(3);
+
+            for (int i = 1; i <= 3; i++)
             {
                 yield return new WaitForSeconds(1f);
                 float k = Random.Range(playerUnit.atk, playerUnit.atk * 1.5f) - enemyUnit.def;
@@ -633,6 +687,8 @@ public class BattleSystem : MonoBehaviour
         #region 04_瀕死一擊
         if (SKILLNAME == "瀕死一擊")
         {
+            SkillPowerExpend(3);
+
             float hit;
             if(playerUnit.currentHp/playerUnit.maxHp<=1 && playerUnit.currentHp / playerUnit.maxHp > 0.66)
             {
@@ -772,6 +828,126 @@ public class BattleSystem : MonoBehaviour
         {
             state = BattleState.ENEMYTURN;
             StartCoroutine(EnemyTrun());
+        }
+    }
+
+    private void SkillPowerExpend(int k)    //消耗能量點數後的能量顯示
+    {
+        playerUnit.currySkillPower = playerUnit.currySkillPower - k;
+        int i = playerUnit.currySkillPower;
+        if (i <= 0)
+        {
+            i = 0;
+        }
+        if (i == 0)
+        {
+            for(int j = 0; j <= 5; j++)
+            {
+                SkillPower[j].SetActive(false);
+            }
+        }
+        if (i == 1)
+        {
+            for (int j = 0; j <= 5; j++)
+            {
+                SkillPower[j].SetActive(false);
+            }
+            SkillPower[i].SetActive(true);
+        }
+        if (i == 2)
+        {
+            for (int j = 0; j <= 5; j++)
+            {
+                SkillPower[j].SetActive(false);
+            }
+            SkillPower[i].SetActive(true);
+        }
+        if (i == 3)
+        {
+            for (int j = 0; j <= 5; j++)
+            {
+                SkillPower[j].SetActive(false);
+            }
+            SkillPower[i].SetActive(true);
+        }
+        if (i == 4)
+        {
+            for (int j = 0; j <= 5; j++)
+            {
+                SkillPower[j].SetActive(false);
+            }
+            SkillPower[i].SetActive(true);
+        }
+        if (i == 5)
+        {
+            for (int j = 0; j <= 5; j++)
+            {
+                SkillPower[j].SetActive(false);
+            }
+            SkillPower[i].SetActive(true);
+        }
+    }
+
+    private void CanNatUse()
+    {
+        SpriteRenderer c1spr = c1.GetComponent<SpriteRenderer>();
+        SpriteRenderer c2spr = c2.GetComponent<SpriteRenderer>();
+        SpriteRenderer c3spr = c3.GetComponent<SpriteRenderer>();
+        SpriteRenderer c4spr = c4.GetComponent<SpriteRenderer>();
+        if (c1spr.sprite == spr11)
+        {
+            c1.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+        else if (c1spr.sprite == spr21 && playerUnit.currySkillPower >= 2)
+        {
+            c1.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+        else if (c1spr.sprite == spr21 && playerUnit.currySkillPower < 2)
+        {
+            c1.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1);
+        }
+
+        if (c2spr.sprite == spr12)
+        {
+            c2.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+        else if (c2spr.sprite == spr22 && playerUnit.currySkillPower >= 1)
+        {
+            c2.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+        else if (c2spr.sprite == spr22 && playerUnit.currySkillPower < 1)
+        {
+            c2.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1);
+        }
+
+        if (c3spr.sprite == spr13)
+        {
+            c3.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+        else if (c3spr.sprite == spr23 && playerUnit.currySkillPower >= 3)
+        {
+            c3.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+        else if (c3spr.sprite == spr23 && playerUnit.currySkillPower < 3)
+        {
+            c3.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1);
+        }
+
+        if (c4spr.sprite == spr14 && enemyUnit.unitName != "巨龍")
+        {
+            c4.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+        else if (c4spr.sprite == spr14 && enemyUnit.unitName == "巨龍")
+        {
+            c4.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1);
+        }
+        else if (c4spr.sprite == spr24 && playerUnit.currySkillPower >= 3)
+        {
+            c4.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+        else if (c4spr.sprite == spr24 && playerUnit.currySkillPower < 3)
+        {
+            c4.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1);
         }
     }
 
