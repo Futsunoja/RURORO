@@ -56,15 +56,15 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 11686}
     - Class: 114
-      Script: {instanceID: 11886}
+      Script: {instanceID: 11790}
     - Class: 114
-      Script: {instanceID: 11898}
+      Script: {instanceID: 11888}
     - Class: 114
-      Script: {instanceID: 12814}
+      Script: {instanceID: 11900}
     - Class: 114
-      Script: {instanceID: 13200}
+      Script: {instanceID: 12816}
     - Class: 114
-      Script: {instanceID: 27930}
+      Script: {instanceID: 13202}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -256,6 +256,12 @@ ScriptsOnlyBuild:
     className: Mask
   - hash:
       serializedVersion: 2
+      Hash: ff838b85507944a574aa1880b7b14e0a
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: SoundManager
+  - hash:
+      serializedVersion: 2
       Hash: caa533b001ae39b864ba8425019e2268
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
@@ -286,7 +292,7 @@ ScriptsOnlyBuild:
     className: ControlPlayableAsset
   - hash:
       serializedVersion: 2
-      Hash: 0484c48c96fbe1406b88fdb2b99a629a
+      Hash: f468910e1879c59bc7d439c145d49d69
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Unit
@@ -548,13 +554,7 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
-  - hash:
-      serializedVersion: 2
-      Hash: ff838b85507944a574aa1880b7b14e0a
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: SoundManager
   platform: 5
   scenePathNames:
   - "Assets/\u5834\u666F/\u6230\u9B25\u756B\u9762.unity"
-  playerPath: C:/Users/User/Desktop/TEXT/RURORO.exe
+  playerPath: C:/Users/User/Desktop/BattleTest/RURORO.exe

@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
-    public static SoundManager instance;
+    public static SoundManager SoundInstance;
     public AudioSource aud;
     public AudioClip soundHitEnter, soundHitCancel, soundAttack, soundBlast, soundBuff, soundThirdSlash, soundNearDeathSlash, soundDrink, soundEnemyAttack;
 
     private void Awake()
     {
-        instance = this;
+        SoundInstance = this;
     }
 
     public void SoundEnterHit()

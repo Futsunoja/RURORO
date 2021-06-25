@@ -3,13 +3,14 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public enum BattleState { START, CHOOSEACTION,PLAYERTURN, ENEMYTURN, ENDTRUN, WON, LOST }
 
 public class BattleSystem : MonoBehaviour
 {
     public GameObject c1, c2, c3, c4;
-    bool i0, i1, i2, i3, i4, i5, i6, i7, i8, ispr1, ispr2, ispr3, ispr01, ispr02, ispr03;
+    bool i0, i1, i2, i3, i4, i5, i6, i7, ispr1, ispr2, ispr3;
     Vector3 c = new Vector3(-2.7f, 0, 0);
     Vector3 o = new Vector3(0.4f, 0, 0);
     public Sprite spr11, spr12, spr13, spr14, spr21, spr22, spr23, spr24, spr31, spr32, spr33, spr34;
@@ -42,6 +43,8 @@ public class BattleSystem : MonoBehaviour
 
     private void Start()
     {
+        Screen.SetResolution(1280, 720, false);    //固定視窗大小
+
         c1.transform.localPosition = c;
         c2.transform.localPosition = c;
         c3.transform.localPosition = c;
@@ -71,14 +74,13 @@ public class BattleSystem : MonoBehaviour
         playerHp.text = playerUnit.currentHp.ToString() + "/" + playerUnit.maxHp.ToString();
         enemyHp.text = enemyUnit.currentHp.ToString() + "/" + enemyUnit.maxHp.ToString();
 
-        PlayerHp.transform.localPosition = new Vector3(-4.02f * (playerUnit.maxHp - playerUnit.currentHp) / playerUnit.maxHp, 0, 0);
-        EnemyHp.transform.localPosition = new Vector3(4.02f * (enemyUnit.maxHp - enemyUnit.currentHp) / enemyUnit.maxHp, 0, 0);
+        PlayerHp.GetComponent<Image>().fillAmount = playerUnit.currentHp / playerUnit.maxHp;
+        EnemyHp.GetComponent<Image>().fillAmount = enemyUnit.currentHp / enemyUnit.maxHp;
 
         for(int i = 0; i <= 4; i++)
         {
-            SkillPower[i].SetActive(false);
+            SkillPower[i].SetActive(true);
         }
-        SkillPower[5].SetActive(true);
 
         state = BattleState.CHOOSEACTION;
         ChooseAction();
@@ -86,8 +88,6 @@ public class BattleSystem : MonoBehaviour
 
     private void ChooseAction()    //回合開始、選擇操作、選擇行動整合
     {
-        print("spr"+(ispr1,ispr2,ispr3,ispr01,ispr02,ispr03,i8));
-        print("i" + (i0, i1, i2, i3, i4, i5, i6, i7, i8));
         if (i7 == false)
         {
             i6 = false;
@@ -289,7 +289,6 @@ public class BattleSystem : MonoBehaviour
 
     private void CAD()    //選擇行動
     {
-        i8 = false;
         SpriteRenderer c1spr = c1.GetComponent<SpriteRenderer>();
         SpriteRenderer c2spr = c2.GetComponent<SpriteRenderer>();
         SpriteRenderer c3spr = c3.GetComponent<SpriteRenderer>();
@@ -306,7 +305,7 @@ public class BattleSystem : MonoBehaviour
                 {
                     if (c1.transform.localPosition == o)
                     {
-                        SoundManager.instance.SoundEnterHit();
+                        SoundManager.SoundInstance.SoundEnterHit();
                         ispr1 = false;
                         i6 = true;
                         i0 = true;
@@ -318,7 +317,7 @@ public class BattleSystem : MonoBehaviour
                     }
                     if (c2.transform.localPosition == o)
                     {
-                        SoundManager.instance.SoundEnterHit();
+                        SoundManager.SoundInstance.SoundEnterHit();
                         BattleMessage.SetActive(false);
                         ispr1 = false;
                         ispr2 = true;
@@ -326,7 +325,7 @@ public class BattleSystem : MonoBehaviour
                     }
                     if (c3.transform.localPosition == o)
                     {
-                        SoundManager.instance.SoundEnterHit();
+                        SoundManager.SoundInstance.SoundEnterHit();
                         BattleMessage.SetActive(false);
                         ispr1 = false;
                         ispr3 = true;
@@ -334,7 +333,7 @@ public class BattleSystem : MonoBehaviour
                     }
                     if (c4.transform.localPosition == o)
                     {
-                        SoundManager.instance.SoundEnterHit();
+                        SoundManager.SoundInstance.SoundEnterHit();
                         if (state == BattleState.CHOOSEACTION)
                         {
                             if (enemyUnit.unitName != "巨龍")
@@ -359,7 +358,7 @@ public class BattleSystem : MonoBehaviour
                     state = BattleState.PLAYERTURN;
                     if (c1.transform.localPosition == o && playerUnit.currySkillPower >= 2)
                     {
-                        SoundManager.instance.SoundEnterHit();
+                        SoundManager.SoundInstance.SoundEnterHit();
                         StartCoroutine(AttackSkill(c1.GetComponent<SpriteRenderer>().sprite.name));
                         SkillItemName.SetActive(false);
                         SkillItemEffect.SetActive(false);
@@ -367,13 +366,13 @@ public class BattleSystem : MonoBehaviour
                     }
                     else if (c1.transform.localPosition == o && playerUnit.currySkillPower < 3)
                     {
-                        SoundManager.instance.SoundEnterHit();
+                        SoundManager.SoundInstance.SoundEnterHit();
                         i6 = false;
                         i0 = false;
                     }
                     if (c2.transform.localPosition == o && playerUnit.currySkillPower >= 1)
                     {
-                        SoundManager.instance.SoundEnterHit();
+                        SoundManager.SoundInstance.SoundEnterHit();
                         StartCoroutine(AttackSkill(c2.GetComponent<SpriteRenderer>().sprite.name));
                         SkillItemName.SetActive(false);
                         SkillItemEffect.SetActive(false);
@@ -381,13 +380,13 @@ public class BattleSystem : MonoBehaviour
                     }
                     else if (c2.transform.localPosition == o && playerUnit.currySkillPower < 1)
                     {
-                        SoundManager.instance.SoundEnterHit();
+                        SoundManager.SoundInstance.SoundEnterHit();
                         i6 = false;
                         i0 = false;
                     }
                     if (c3.transform.localPosition == o && playerUnit.currySkillPower >= 3)
                     {
-                        SoundManager.instance.SoundEnterHit();
+                        SoundManager.SoundInstance.SoundEnterHit();
                         StartCoroutine(AttackSkill(c3.GetComponent<SpriteRenderer>().sprite.name));
                         SkillItemName.SetActive(false);
                         SkillItemEffect.SetActive(false);
@@ -395,13 +394,13 @@ public class BattleSystem : MonoBehaviour
                     }
                     else if (c3.transform.localPosition == o && playerUnit.currySkillPower < 3)
                     {
-                        SoundManager.instance.SoundEnterHit();
+                        SoundManager.SoundInstance.SoundEnterHit();
                         i6 = false;
                         i0 = false;
                     }
                     if (c4.transform.localPosition == o && playerUnit.currySkillPower >= 3)
                     {
-                        SoundManager.instance.SoundEnterHit();
+                        SoundManager.SoundInstance.SoundEnterHit();
                         StartCoroutine(AttackSkill(c4.GetComponent<SpriteRenderer>().sprite.name));
                         SkillItemName.SetActive(false);
                         SkillItemEffect.SetActive(false);
@@ -409,7 +408,7 @@ public class BattleSystem : MonoBehaviour
                     }
                     else if (c4.transform.localPosition == o && playerUnit.currySkillPower < 3)
                     {
-                        SoundManager.instance.SoundEnterHit();
+                        SoundManager.SoundInstance.SoundEnterHit();
                         i6 = false;
                         i0 = false;
                     }
@@ -420,7 +419,7 @@ public class BattleSystem : MonoBehaviour
                     state = BattleState.PLAYERTURN;
                     if (c1.transform.localPosition == o && playerUnit.RedPoison > 0)
                     {
-                        SoundManager.instance.SoundEnterHit();
+                        SoundManager.SoundInstance.SoundEnterHit();
                         StartCoroutine(Item(c1.GetComponent<SpriteRenderer>().sprite.name));
                         SkillItemName.SetActive(false);
                         SkillItemEffect.SetActive(false);
@@ -428,13 +427,13 @@ public class BattleSystem : MonoBehaviour
                     }
                     else if (c1.transform.localPosition == o && playerUnit.RedPoison <= 0)
                     {
-                        SoundManager.instance.SoundEnterHit();
+                        SoundManager.SoundInstance.SoundEnterHit();
                         i6 = false;
                         i0 = false;
                     }
                     if (c2.transform.localPosition == o && playerUnit.BluePoison > 0)
                     {
-                        SoundManager.instance.SoundEnterHit();
+                        SoundManager.SoundInstance.SoundEnterHit();
                         StartCoroutine(Item(c2.GetComponent<SpriteRenderer>().sprite.name));
                         SkillItemName.SetActive(false);
                         SkillItemEffect.SetActive(false);
@@ -442,13 +441,13 @@ public class BattleSystem : MonoBehaviour
                     }
                     else if (c2.transform.localPosition == o && playerUnit.BluePoison <= 0)
                     {
-                        SoundManager.instance.SoundEnterHit();
+                        SoundManager.SoundInstance.SoundEnterHit();
                         i6 = false;
                         i0 = false;
                     }
                     if (c3.transform.localPosition == o && playerUnit.BuffPoison > 0)
                     {
-                        SoundManager.instance.SoundEnterHit();
+                        SoundManager.SoundInstance.SoundEnterHit();
                         StartCoroutine(Item(c3.GetComponent<SpriteRenderer>().sprite.name));
                         SkillItemName.SetActive(false);
                         SkillItemEffect.SetActive(false);
@@ -456,13 +455,13 @@ public class BattleSystem : MonoBehaviour
                     }
                     else if (c3.transform.localPosition == o && playerUnit.BuffPoison <= 0)
                     {
-                        SoundManager.instance.SoundEnterHit();
+                        SoundManager.SoundInstance.SoundEnterHit();
                         i6 = false;
                         i0 = false;
                     }
                     if (c4.transform.localPosition == o && playerUnit.UndebuffPoison > 0)
                     {
-                        SoundManager.instance.SoundEnterHit();
+                        SoundManager.SoundInstance.SoundEnterHit();
                         StartCoroutine(Item(c4.GetComponent<SpriteRenderer>().sprite.name));
                         SkillItemName.SetActive(false);
                         SkillItemEffect.SetActive(false);
@@ -470,7 +469,7 @@ public class BattleSystem : MonoBehaviour
                     }
                     else if (c4.transform.localPosition == o && playerUnit.UndebuffPoison <= 0)
                     {
-                        SoundManager.instance.SoundEnterHit();
+                        SoundManager.SoundInstance.SoundEnterHit();
                         i6 = false;
                         i0 = false;
                     }
@@ -482,13 +481,9 @@ public class BattleSystem : MonoBehaviour
         {
             if (i1 == true || i2 == true || i3 == true || i4 == true)
             {
-                if (ispr1 == true)
-                {
-                    i8 = false;
-                }
                 if (ispr2 == true || ispr3 == true)
                 {
-                    SoundManager.instance.SoundHitCancel();
+                    SoundManager.SoundInstance.SoundHitCancel();
                     SkillItemName.SetActive(false);
                     SkillItemEffect.SetActive(false);
                     ispr2 = false;
@@ -641,7 +636,6 @@ public class BattleSystem : MonoBehaviour
 
         i6 = false;     //是否收後不展開
         i7 = false;     //戰鬥開始
-        i8 = false;     //是否在執行中
 
         ispr1 = true;   //是否為主選項
         ispr2 = false;  //是否為技能選項
@@ -665,7 +659,7 @@ public class BattleSystem : MonoBehaviour
 
         BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "施展了攻擊";
 
-        SoundManager.instance.SoundEnemyAttack();
+        SoundManager.SoundInstance.SoundEnemyAttack();
 
         int hit = enemyUnit.atk - playerUnit.def;
         if (hit <= 0)
@@ -701,7 +695,7 @@ public class BattleSystem : MonoBehaviour
         #region 00_普通攻擊
         if (SKILLNAME == "攻擊")
         {
-            SoundManager.instance.SoundAttack();
+            SoundManager.SoundInstance.SoundAttack();
             int hit = playerUnit.atk - enemyUnit.def;
             if (hit <= 0)
             {
@@ -720,7 +714,7 @@ public class BattleSystem : MonoBehaviour
         #region 01_狂擊
         if (SKILLNAME == "狂擊")
         {
-            SoundManager.instance.SoundBlast();
+            SoundManager.SoundInstance.SoundBlast();
             SkillPowerExpend(2);
 
             int hit = 2 * playerUnit.atk - enemyUnit.def;
@@ -741,7 +735,7 @@ public class BattleSystem : MonoBehaviour
         #region 02_高級強化
         if (SKILLNAME == "高級強化")
         {
-            SoundManager.instance.SoundBuff();
+            SoundManager.SoundInstance.SoundBuff();
             SkillPowerExpend(1);
 
             playerUnit.atk += 15;
@@ -764,7 +758,7 @@ public class BattleSystem : MonoBehaviour
             for (int i = 1; i <= 3; i++)
             {
                 yield return new WaitForSeconds(1f);
-                SoundManager.instance.SoundThirdSlash();
+                SoundManager.SoundInstance.SoundThirdSlash();
                 float k = Random.Range(playerUnit.atk, playerUnit.atk * 1.5f) - enemyUnit.def;
                 if (k <= 0)
                 {
@@ -789,7 +783,7 @@ public class BattleSystem : MonoBehaviour
         #region 04_瀕死一擊
         if (SKILLNAME == "瀕死一擊")
         {
-            SoundManager.instance.SoundNearDeathSlash();
+            SoundManager.SoundInstance.SoundNearDeathSlash();
             SkillPowerExpend(3);
 
             float hit;
@@ -870,7 +864,7 @@ public class BattleSystem : MonoBehaviour
         yield return new WaitForSeconds(1f);
         BattleMessage.SetActive(true);
         BattleMessage.GetComponent<Text>().text = playerUnit.unitName + "使用了" + ITEMNAME;
-        SoundManager.instance.SoundDrink();
+        SoundManager.SoundInstance.SoundDrink();
 
         #region 01_紅藥水
         if (ITEMNAME == "紅藥水")
@@ -882,7 +876,7 @@ public class BattleSystem : MonoBehaviour
             {
                 playerUnit.currentHp = playerUnit.maxHp;
             }
-            PlayerHp.transform.localPosition = new Vector3(-4.02f * (playerUnit.maxHp - playerUnit.currentHp) / playerUnit.maxHp, 0, 0);
+            PlayerHp.GetComponent<Image>().fillAmount = playerUnit.currentHp / playerUnit.maxHp;
             playerHp.text = playerUnit.currentHp.ToString() + "/" + playerUnit.maxHp.ToString();
 
             yield return new WaitForSeconds(1f);
@@ -929,6 +923,7 @@ public class BattleSystem : MonoBehaviour
             playerUnit.UndebuffPoison -= 1;
 
             yield return new WaitForSeconds(1f);
+            SoundManager.SoundInstance.SoundBuff();
             BattleMessage.GetComponent<Text>().text = playerUnit.unitName + "的負面狀態消失了";
 
             state = BattleState.ENEMYTURN;
@@ -972,11 +967,21 @@ public class BattleSystem : MonoBehaviour
         {
             print("LOSE");
         }
+        Invoke("DelayRestartGame", 2f);
+    }
+
+    public void DelayRestartGame()
+    {
+        SceneManager.LoadScene("戰鬥畫面");
     }
 
     private void EnemyDamageHpSettle()     //敵人血條扣除傷害結算
     {
-        EnemyHp.transform.localPosition = new Vector3(4.02f * (enemyUnit.maxHp - enemyUnit.currentHp) / enemyUnit.maxHp, 0, 0);
+        if (enemyUnit.currentHp <= 0)
+        {
+            enemyUnit.currentHp = 0;
+        }
+        EnemyHp.GetComponent<Image>().fillAmount = enemyUnit.currentHp / enemyUnit.maxHp;
         if (enemyUnit.currentHp <= 0)
         {
             enemyHp.text = 0 + "/" + enemyUnit.maxHp.ToString();
@@ -988,7 +993,11 @@ public class BattleSystem : MonoBehaviour
     }
     private void PlayerDamageHpSettle()    //玩家血條扣除傷害結算
     {
-        PlayerHp.transform.localPosition = new Vector3(-4.02f * (playerUnit.maxHp - playerUnit.currentHp) / playerUnit.maxHp, 0, 0);
+        if (playerUnit.currentHp <= 0)
+        {
+            playerUnit.currentHp = 0;
+        }
+        PlayerHp.GetComponent<Image>().fillAmount = playerUnit.currentHp / playerUnit.maxHp;
         if (playerUnit.currentHp <= 0)
         {
             playerHp.text = 0 + "/" + playerUnit.maxHp.ToString();
@@ -1015,65 +1024,24 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-    private void SkillPowerExpend(int k)    //消耗能量點數後的能量顯示
+    private void SkillPowerExpend(int h)    //消耗能量點數後的能量顯示
     {
-        playerUnit.currySkillPower -= k;
+        playerUnit.currySkillPower -= h;
         int i = playerUnit.currySkillPower;
+
+        for (int j = 0; j <= playerUnit.maxSkillPower; j++)
+        {
+            SkillPower[j].SetActive(false);
+        }
         if (i <= 0)
         {
             i = 0;
         }
-        else if (i >= 5)
+        else if (i >= playerUnit.maxSkillPower)
         {
-            i = 5;
+            i = playerUnit.maxSkillPower;
         }
-        if (i == 0)
-        {
-            for(int j = 0; j <= 5; j++)
-            {
-                SkillPower[j].SetActive(false);
-            }
-        }
-        if (i == 1)
-        {
-            for (int j = 0; j <= 5; j++)
-            {
-                SkillPower[j].SetActive(false);
-            }
-            SkillPower[i].SetActive(true);
-        }
-        if (i == 2)
-        {
-            for (int j = 0; j <= 5; j++)
-            {
-                SkillPower[j].SetActive(false);
-            }
-            SkillPower[i].SetActive(true);
-        }
-        if (i == 3)
-        {
-            for (int j = 0; j <= 5; j++)
-            {
-                SkillPower[j].SetActive(false);
-            }
-            SkillPower[i].SetActive(true);
-        }
-        if (i == 4)
-        {
-            for (int j = 0; j <= 5; j++)
-            {
-                SkillPower[j].SetActive(false);
-            }
-            SkillPower[i].SetActive(true);
-        }
-        if (i == 5)
-        {
-            for (int j = 0; j <= 5; j++)
-            {
-                SkillPower[j].SetActive(false);
-            }
-            SkillPower[i].SetActive(true);
-        }
+        SkillPower[i].SetActive(true);
     }
 
     private void CanNatUse()    //無法使用技能或道具
