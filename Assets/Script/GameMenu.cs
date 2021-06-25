@@ -12,6 +12,7 @@ public class GameMenu : MonoBehaviour
 
     private void Start()
     {
+        Screen.SetResolution(1280, 720, false);
         pig.position = T;
     }
 

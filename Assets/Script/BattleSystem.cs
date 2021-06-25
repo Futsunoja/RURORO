@@ -9,7 +9,7 @@ public enum BattleState { START, CHOOSEACTION,PLAYERTURN, ENEMYTURN, ENDTRUN, WO
 public class BattleSystem : MonoBehaviour
 {
     public GameObject c1, c2, c3, c4;
-    bool i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, ispr1, ispr2, ispr3, ispr01, ispr02, ispr03;
+    bool i0, i1, i2, i3, i4, i5, i6, i7, i8, ispr1, ispr2, ispr3, ispr01, ispr02, ispr03;
     Vector3 c = new Vector3(-2.7f, 0, 0);
     Vector3 o = new Vector3(0.4f, 0, 0);
     public Sprite spr11, spr12, spr13, spr14, spr21, spr22, spr23, spr24, spr31, spr32, spr33, spr34;
@@ -42,6 +42,11 @@ public class BattleSystem : MonoBehaviour
 
     private void Start()
     {
+        c1.transform.localPosition = c;
+        c2.transform.localPosition = c;
+        c3.transform.localPosition = c;
+        c4.transform.localPosition = c;
+
         GameObject playerGo = Instantiate(playerPrefab, playerBattleStation);
         playerUnit = playerGo.GetComponent<Unit>();
         GameObject enemyGo = Instantiate(enemyPrefab, enemyBattleStation);
@@ -81,6 +86,8 @@ public class BattleSystem : MonoBehaviour
 
     private void ChooseAction()    //回合開始、選擇操作、選擇行動整合
     {
+        print("spr"+(ispr1,ispr2,ispr3,ispr01,ispr02,ispr03,i8));
+        print("i" + (i0, i1, i2, i3, i4, i5, i6, i7, i8));
         if (i7 == false)
         {
             i6 = false;
@@ -130,9 +137,9 @@ public class BattleSystem : MonoBehaviour
                     i7 = true;
                     SkillPower[playerUnit.currySkillPower].SetActive(false);
                     playerUnit.currySkillPower++;
-                    if (playerUnit.currySkillPower >= 5)
+                    if (playerUnit.currySkillPower >= playerUnit.maxSkillPower)
                     {
-                        playerUnit.currySkillPower = 5;
+                        playerUnit.currySkillPower = playerUnit.maxSkillPower;
                     }
                     SkillPower[playerUnit.currySkillPower].SetActive(true);
                 }
@@ -230,7 +237,7 @@ public class BattleSystem : MonoBehaviour
                 SkillItemName.SetActive(true);
                 SkillItemEffect.SetActive(true);
                 SkillItemName.GetComponent<Text>().text = "【高級強化】";
-                SkillItemEffect.GetComponent<Text>().text = "消耗1點能量，大幅提升攻擊力與防禦\n力三個回合。";
+                SkillItemEffect.GetComponent<Text>().text = "消耗1點能量，攻擊力與防禦力大幅提\n升三個回合。";
             }
             if (c3.transform.localPosition == o)
             {
@@ -251,19 +258,31 @@ public class BattleSystem : MonoBehaviour
         {
             if (c1.transform.localPosition == o)
             {
-                BattleMessage.GetComponent<Text>().text = c1.GetComponent<SpriteRenderer>().sprite.name;
+                SkillItemName.SetActive(true);
+                SkillItemEffect.SetActive(true);
+                SkillItemName.GetComponent<Text>().text = "【紅藥水】　　　　　　擁有"+playerUnit.RedPoison+"個";
+                SkillItemEffect.GetComponent<Text>().text = "血量恢復50點。";
             }
             if (c2.transform.localPosition == o)
             {
-                BattleMessage.GetComponent<Text>().text = c2.GetComponent<SpriteRenderer>().sprite.name;
+                SkillItemName.SetActive(true);
+                SkillItemEffect.SetActive(true);
+                SkillItemName.GetComponent<Text>().text = "【藍藥水】　　　　　　擁有"+playerUnit.BluePoison+"個";
+                SkillItemEffect.GetComponent<Text>().text = "能量恢復1點。";
             }
             if (c3.transform.localPosition == o)
             {
-                BattleMessage.GetComponent<Text>().text = c3.GetComponent<SpriteRenderer>().sprite.name;
+                SkillItemName.SetActive(true);
+                SkillItemEffect.SetActive(true);
+                SkillItemName.GetComponent<Text>().text = "【秘藥】　　　　　　　擁有" + playerUnit.BuffPoison + "個";
+                SkillItemEffect.GetComponent<Text>().text = "攻擊力與防禦力大幅提升。";
             }
             if (c4.transform.localPosition == o)
             {
-                BattleMessage.GetComponent<Text>().text = c4.GetComponent<SpriteRenderer>().sprite.name;
+                SkillItemName.SetActive(true);
+                SkillItemEffect.SetActive(true);
+                SkillItemName.GetComponent<Text>().text = "【萬能藥】　　　　　　擁有" + playerUnit.UndebuffPoison + "個";
+                SkillItemEffect.GetComponent<Text>().text = "消除所有不良狀態。";
             }
         }
     }
@@ -271,7 +290,6 @@ public class BattleSystem : MonoBehaviour
     private void CAD()    //選擇行動
     {
         i8 = false;
-        print("i"+(i5,i6,i7,i8,i9)+"ispr"+(ispr1,ispr2,ispr3));
         SpriteRenderer c1spr = c1.GetComponent<SpriteRenderer>();
         SpriteRenderer c2spr = c2.GetComponent<SpriteRenderer>();
         SpriteRenderer c3spr = c3.GetComponent<SpriteRenderer>();
@@ -280,137 +298,204 @@ public class BattleSystem : MonoBehaviour
 
         CanNatUse();
 
-        if (Input.GetKeyDown(KeyCode.J) && i8 == false)
+        if (Input.GetKeyDown(KeyCode.J))
         {
-            i8 = true;
-            if (ispr1 == true)
+            if (i1 == true || i2 == true || i3 == true || i4 == true)
             {
-                if (c1.transform.localPosition == o)
+                if (ispr1 == true)
                 {
-                    ispr1 = false;
-                    i6 = true;
-                    i0 = true;
-                    if (state == BattleState.CHOOSEACTION)
+                    if (c1.transform.localPosition == o)
                     {
-                        state = BattleState.PLAYERTURN;
-                        StartCoroutine(AttackSkill(c1.GetComponent<SpriteRenderer>().sprite.name));
-                    }
-                }
-                if (c2.transform.localPosition == o)
-                {
-                    BattleMessage.SetActive(false);
-                    ispr1 = false;
-                    ispr02 = true;
-                    i0 = true;
-                }
-                if (c3.transform.localPosition == o)
-                {
-                    BattleMessage.SetActive(false);
-                    ispr1 = false;
-                    ispr03 = true;
-                    i0 = true;
-                }
-                if (c4.transform.localPosition == o)
-                {
-                    if (state == BattleState.CHOOSEACTION)
-                    {
-                        if(enemyUnit.unitName != "巨龍")
+                        SoundManager.instance.SoundEnterHit();
+                        ispr1 = false;
+                        i6 = true;
+                        i0 = true;
+                        if (state == BattleState.CHOOSEACTION)
                         {
-                            ispr1 = false;
-                            i6 = true;
-                            i0 = true;
                             state = BattleState.PLAYERTURN;
-                            StartCoroutine(Run());
+                            StartCoroutine(AttackSkill(c1.GetComponent<SpriteRenderer>().sprite.name));
                         }
-                        else if(enemyUnit.unitName == "巨龍")
+                    }
+                    if (c2.transform.localPosition == o)
+                    {
+                        SoundManager.instance.SoundEnterHit();
+                        BattleMessage.SetActive(false);
+                        ispr1 = false;
+                        ispr2 = true;
+                        i0 = true;
+                    }
+                    if (c3.transform.localPosition == o)
+                    {
+                        SoundManager.instance.SoundEnterHit();
+                        BattleMessage.SetActive(false);
+                        ispr1 = false;
+                        ispr3 = true;
+                        i0 = true;
+                    }
+                    if (c4.transform.localPosition == o)
+                    {
+                        SoundManager.instance.SoundEnterHit();
+                        if (state == BattleState.CHOOSEACTION)
                         {
-                            CAD();
+                            if (enemyUnit.unitName != "巨龍")
+                            {
+                                ispr1 = false;
+                                i6 = true;
+                                i0 = true;
+                                state = BattleState.PLAYERTURN;
+                                StartCoroutine(Run());
+                            }
+                            else if (enemyUnit.unitName == "巨龍")
+                            {
+                                i6 = false;
+                                i0 = false;
+                            }
                         }
                     }
                 }
+                else if (ispr2 == true)    //技能選項
+                {
+                    i6 = true;
+                    state = BattleState.PLAYERTURN;
+                    if (c1.transform.localPosition == o && playerUnit.currySkillPower >= 2)
+                    {
+                        SoundManager.instance.SoundEnterHit();
+                        StartCoroutine(AttackSkill(c1.GetComponent<SpriteRenderer>().sprite.name));
+                        SkillItemName.SetActive(false);
+                        SkillItemEffect.SetActive(false);
+                        i0 = true;
+                    }
+                    else if (c1.transform.localPosition == o && playerUnit.currySkillPower < 3)
+                    {
+                        SoundManager.instance.SoundEnterHit();
+                        i6 = false;
+                        i0 = false;
+                    }
+                    if (c2.transform.localPosition == o && playerUnit.currySkillPower >= 1)
+                    {
+                        SoundManager.instance.SoundEnterHit();
+                        StartCoroutine(AttackSkill(c2.GetComponent<SpriteRenderer>().sprite.name));
+                        SkillItemName.SetActive(false);
+                        SkillItemEffect.SetActive(false);
+                        i0 = true;
+                    }
+                    else if (c2.transform.localPosition == o && playerUnit.currySkillPower < 1)
+                    {
+                        SoundManager.instance.SoundEnterHit();
+                        i6 = false;
+                        i0 = false;
+                    }
+                    if (c3.transform.localPosition == o && playerUnit.currySkillPower >= 3)
+                    {
+                        SoundManager.instance.SoundEnterHit();
+                        StartCoroutine(AttackSkill(c3.GetComponent<SpriteRenderer>().sprite.name));
+                        SkillItemName.SetActive(false);
+                        SkillItemEffect.SetActive(false);
+                        i0 = true;
+                    }
+                    else if (c3.transform.localPosition == o && playerUnit.currySkillPower < 3)
+                    {
+                        SoundManager.instance.SoundEnterHit();
+                        i6 = false;
+                        i0 = false;
+                    }
+                    if (c4.transform.localPosition == o && playerUnit.currySkillPower >= 3)
+                    {
+                        SoundManager.instance.SoundEnterHit();
+                        StartCoroutine(AttackSkill(c4.GetComponent<SpriteRenderer>().sprite.name));
+                        SkillItemName.SetActive(false);
+                        SkillItemEffect.SetActive(false);
+                        i0 = true;
+                    }
+                    else if (c4.transform.localPosition == o && playerUnit.currySkillPower < 3)
+                    {
+                        SoundManager.instance.SoundEnterHit();
+                        i6 = false;
+                        i0 = false;
+                    }
+                }
+                else if (ispr3 == true)    //道具選項
+                {
+                    i6 = true;
+                    state = BattleState.PLAYERTURN;
+                    if (c1.transform.localPosition == o && playerUnit.RedPoison > 0)
+                    {
+                        SoundManager.instance.SoundEnterHit();
+                        StartCoroutine(Item(c1.GetComponent<SpriteRenderer>().sprite.name));
+                        SkillItemName.SetActive(false);
+                        SkillItemEffect.SetActive(false);
+                        i0 = true;
+                    }
+                    else if (c1.transform.localPosition == o && playerUnit.RedPoison <= 0)
+                    {
+                        SoundManager.instance.SoundEnterHit();
+                        i6 = false;
+                        i0 = false;
+                    }
+                    if (c2.transform.localPosition == o && playerUnit.BluePoison > 0)
+                    {
+                        SoundManager.instance.SoundEnterHit();
+                        StartCoroutine(Item(c2.GetComponent<SpriteRenderer>().sprite.name));
+                        SkillItemName.SetActive(false);
+                        SkillItemEffect.SetActive(false);
+                        i0 = true;
+                    }
+                    else if (c2.transform.localPosition == o && playerUnit.BluePoison <= 0)
+                    {
+                        SoundManager.instance.SoundEnterHit();
+                        i6 = false;
+                        i0 = false;
+                    }
+                    if (c3.transform.localPosition == o && playerUnit.BuffPoison > 0)
+                    {
+                        SoundManager.instance.SoundEnterHit();
+                        StartCoroutine(Item(c3.GetComponent<SpriteRenderer>().sprite.name));
+                        SkillItemName.SetActive(false);
+                        SkillItemEffect.SetActive(false);
+                        i0 = true;
+                    }
+                    else if (c3.transform.localPosition == o && playerUnit.BuffPoison <= 0)
+                    {
+                        SoundManager.instance.SoundEnterHit();
+                        i6 = false;
+                        i0 = false;
+                    }
+                    if (c4.transform.localPosition == o && playerUnit.UndebuffPoison > 0)
+                    {
+                        SoundManager.instance.SoundEnterHit();
+                        StartCoroutine(Item(c4.GetComponent<SpriteRenderer>().sprite.name));
+                        SkillItemName.SetActive(false);
+                        SkillItemEffect.SetActive(false);
+                        i0 = true;
+                    }
+                    else if (c4.transform.localPosition == o && playerUnit.UndebuffPoison <= 0)
+                    {
+                        SoundManager.instance.SoundEnterHit();
+                        i6 = false;
+                        i0 = false;
+                    }
+                }
             }
-            if (ispr2 == true)    //技能選項
-            {
-                ispr2 = false;
-                i6 = true;
-                state = BattleState.PLAYERTURN;
-                if (c1.transform.localPosition == o && playerUnit.currySkillPower >= 2)
-                {
-                    StartCoroutine(AttackSkill(c1.GetComponent<SpriteRenderer>().sprite.name));
-                    SkillItemName.SetActive(false);
-                    SkillItemEffect.SetActive(false);
-                    i0 = true;
-                }
-                else if(c1.transform.localPosition == o && playerUnit.currySkillPower < 3)
-                {
-                    ispr2 = true;
-                    i6 = false;
-                    i0 = false;
-                }
-                if (c2.transform.localPosition == o && playerUnit.currySkillPower >= 1)
-                {
-                    StartCoroutine(AttackSkill(c2.GetComponent<SpriteRenderer>().sprite.name));
-                    SkillItemName.SetActive(false);
-                    SkillItemEffect.SetActive(false);
-                    i0 = true;
-                }
-                else if (c2.transform.localPosition == o && playerUnit.currySkillPower < 1)
-                {
-                    ispr2 = true;
-                    i6 = false;
-                    i0 = false;
-                }
-                if (c3.transform.localPosition == o && playerUnit.currySkillPower >= 3)
-                {
-                    StartCoroutine(AttackSkill(c3.GetComponent<SpriteRenderer>().sprite.name));
-                    SkillItemName.SetActive(false);
-                    SkillItemEffect.SetActive(false);
-                    i0 = true;
-                }
-                else if (c3.transform.localPosition == o && playerUnit.currySkillPower < 3)
-                {
-                    ispr2 = true;
-                    i6 = false;
-                    i0 = false;
-                }
-                if (c4.transform.localPosition == o && playerUnit.currySkillPower >= 3)
-                {
-                    StartCoroutine(AttackSkill(c4.GetComponent<SpriteRenderer>().sprite.name));
-                    SkillItemName.SetActive(false);
-                    SkillItemEffect.SetActive(false);
-                    i0 = true;
-                }
-                else if (c4.transform.localPosition == o && playerUnit.currySkillPower < 3)
-                {
-                    ispr2 = true;
-                    i6 = false;
-                    i0 = false;
-                }
-
-            }
-            if (ispr3 == true)    //道具選項
-            {
-                ispr3 = false;
-                i6 = true;
-                i0 = true;
-                StartCoroutine(Item());
-            }
+            
         }
-        if (Input.GetKeyDown(KeyCode.K) && i8 == false)
+        if (Input.GetKeyDown(KeyCode.K))
         {
-            i8 = true;
-            if (ispr1 == true)
+            if (i1 == true || i2 == true || i3 == true || i4 == true)
             {
-                i8 = false;
-            }
-            if (ispr2 == true || ispr3 == true)
-            {
-                SkillItemName.SetActive(false);
-                SkillItemEffect.SetActive(false);
-                ispr01 = true;
-                ispr2 = false;
-                ispr3 = false;
-                i0 = true;
+                if (ispr1 == true)
+                {
+                    i8 = false;
+                }
+                if (ispr2 == true || ispr3 == true)
+                {
+                    SoundManager.instance.SoundHitCancel();
+                    SkillItemName.SetActive(false);
+                    SkillItemEffect.SetActive(false);
+                    ispr2 = false;
+                    ispr3 = false;
+                    ispr1 = true;
+                    i0 = true;
+                }
             }
         }
 
@@ -484,28 +569,26 @@ public class BattleSystem : MonoBehaviour
                     c4.transform.localPosition = Vector3.MoveTowards(c4.transform.localPosition, c, step);
                     if (c4.transform.localPosition == c)
                     {
-                        if (ispr01 == true)
+                        if (ispr1 == true)
                         {
-                            ispr01 = false;
-                            ispr1 = true;
+                            ispr2 = false;
+                            ispr3 = false;
                             c1spr.sprite = spr11;
                             c2spr.sprite = spr12;
                             c3spr.sprite = spr13;
                             c4spr.sprite = spr14;
                         }
-                        if (ispr02 == true)
+                        if (ispr2 == true)
                         {
-                            ispr02 = false;
-                            ispr2 = true;
+                            ispr1 = false;
                             c1spr.sprite = spr21;
                             c2spr.sprite = spr22;
                             c3spr.sprite = spr23;
                             c4spr.sprite = spr24;
                         }
-                        if (ispr03 == true)
+                        if (ispr3 == true)
                         {
-                            ispr03 = false;
-                            ispr3 = true;
+                            ispr1 = false;
                             c1spr.sprite = spr31;
                             c2spr.sprite = spr32;
                             c3spr.sprite = spr33;
@@ -537,7 +620,6 @@ public class BattleSystem : MonoBehaviour
                         i1 = true;
                         i5 = false;
                         i0 = false;
-                        i8 = false;
                     }
                 }
             }
@@ -560,7 +642,6 @@ public class BattleSystem : MonoBehaviour
         i6 = false;     //是否收後不展開
         i7 = false;     //戰鬥開始
         i8 = false;     //是否在執行中
-        i9 = false;     //是否經過一輪
 
         ispr1 = true;   //是否為主選項
         ispr2 = false;  //是否為技能選項
@@ -584,7 +665,13 @@ public class BattleSystem : MonoBehaviour
 
         BattleMessage.GetComponent<Text>().text = enemyUnit.unitName + "施展了攻擊";
 
+        SoundManager.instance.SoundEnemyAttack();
+
         int hit = enemyUnit.atk - playerUnit.def;
+        if (hit <= 0)
+        {
+            hit = 0;
+        }
         bool isDead = playerUnit.TakeDamage(hit);
         PlayerDamageHpSettle();
 
@@ -614,7 +701,12 @@ public class BattleSystem : MonoBehaviour
         #region 00_普通攻擊
         if (SKILLNAME == "攻擊")
         {
+            SoundManager.instance.SoundAttack();
             int hit = playerUnit.atk - enemyUnit.def;
+            if (hit <= 0)
+            {
+                hit = 0;
+            }
             EnemyIsDead = enemyUnit.TakeDamage(hit);
             EnemyDamageHpSettle();
 
@@ -628,9 +720,14 @@ public class BattleSystem : MonoBehaviour
         #region 01_狂擊
         if (SKILLNAME == "狂擊")
         {
+            SoundManager.instance.SoundBlast();
             SkillPowerExpend(2);
 
             int hit = 2 * playerUnit.atk - enemyUnit.def;
+            if (hit <= 0)
+            {
+                hit = 0;
+            }
             EnemyIsDead = enemyUnit.TakeDamage(hit);
             EnemyDamageHpSettle();
 
@@ -644,6 +741,7 @@ public class BattleSystem : MonoBehaviour
         #region 02_高級強化
         if (SKILLNAME == "高級強化")
         {
+            SoundManager.instance.SoundBuff();
             SkillPowerExpend(1);
 
             playerUnit.atk += 15;
@@ -653,7 +751,6 @@ public class BattleSystem : MonoBehaviour
             yield return new WaitForSeconds(1f);
             BattleMessage.GetComponent<Text>().text = playerUnit.unitName + "的攻擊、防禦大幅提升";
 
-            yield return new WaitForSeconds(1f);
             state = BattleState.ENEMYTURN;
             StartCoroutine(EnemyTrun());
         }
@@ -667,7 +764,12 @@ public class BattleSystem : MonoBehaviour
             for (int i = 1; i <= 3; i++)
             {
                 yield return new WaitForSeconds(1f);
+                SoundManager.instance.SoundThirdSlash();
                 float k = Random.Range(playerUnit.atk, playerUnit.atk * 1.5f) - enemyUnit.def;
+                if (k <= 0)
+                {
+                    k = 0;
+                }
                 int hit = (int)k;
                 EnemyIsDead = enemyUnit.TakeDamage(hit);
                 EnemyDamageHpSettle();
@@ -687,12 +789,17 @@ public class BattleSystem : MonoBehaviour
         #region 04_瀕死一擊
         if (SKILLNAME == "瀕死一擊")
         {
+            SoundManager.instance.SoundNearDeathSlash();
             SkillPowerExpend(3);
 
             float hit;
             if(playerUnit.currentHp/playerUnit.maxHp<=1 && playerUnit.currentHp / playerUnit.maxHp > 0.66)
             {
                 hit = playerUnit.atk * 2.3f - enemyUnit.def;
+                if (hit <= 0)
+                {
+                    hit = 0;
+                }
                 EnemyIsDead = enemyUnit.TakeDamage((int)hit);
                 EnemyDamageHpSettle();
 
@@ -702,6 +809,10 @@ public class BattleSystem : MonoBehaviour
             else if(playerUnit.currentHp / playerUnit.maxHp <= 0.66 && playerUnit.currentHp / playerUnit.maxHp > 0.33f)
             {
                 hit = playerUnit.atk * 2.6f - enemyUnit.def;
+                if (hit <= 0)
+                {
+                    hit = 0;
+                }
                 EnemyIsDead = enemyUnit.TakeDamage((int)hit);
                 EnemyDamageHpSettle();
 
@@ -711,6 +822,10 @@ public class BattleSystem : MonoBehaviour
             else if (playerUnit.currentHp / playerUnit.maxHp <= 0.33 && playerUnit.currentHp / playerUnit.maxHp > 0.1f)
             {
                 hit = playerUnit.atk * 3f - enemyUnit.def;
+                if (hit <= 0)
+                {
+                    hit = 0;
+                }
                 EnemyIsDead = enemyUnit.TakeDamage((int)hit);
                 EnemyDamageHpSettle();
 
@@ -720,6 +835,10 @@ public class BattleSystem : MonoBehaviour
             else if (playerUnit.currentHp / playerUnit.maxHp <= 0.1 && playerUnit.currentHp / playerUnit.maxHp > 0)
             {
                 hit = playerUnit.atk * 4f - enemyUnit.def;
+                if (hit <= 0)
+                {
+                    hit = 0;
+                }
                 EnemyIsDead = enemyUnit.TakeDamage((int)hit);
                 EnemyDamageHpSettle();
 
@@ -746,11 +865,76 @@ public class BattleSystem : MonoBehaviour
         #endregion
     }
 
-    IEnumerator Item()    //使用道具
+    IEnumerator Item(string ITEMNAME)    //使用道具
     {
         yield return new WaitForSeconds(1f);
-        print("道具");
-        ReSet();
+        BattleMessage.SetActive(true);
+        BattleMessage.GetComponent<Text>().text = playerUnit.unitName + "使用了" + ITEMNAME;
+        SoundManager.instance.SoundDrink();
+
+        #region 01_紅藥水
+        if (ITEMNAME == "紅藥水")
+        {
+            playerUnit.RedPoison -= 1;
+
+            playerUnit.currentHp += 50;
+            if (playerUnit.currentHp > playerUnit.maxHp)
+            {
+                playerUnit.currentHp = playerUnit.maxHp;
+            }
+            PlayerHp.transform.localPosition = new Vector3(-4.02f * (playerUnit.maxHp - playerUnit.currentHp) / playerUnit.maxHp, 0, 0);
+            playerHp.text = playerUnit.currentHp.ToString() + "/" + playerUnit.maxHp.ToString();
+
+            yield return new WaitForSeconds(1f);
+            BattleMessage.GetComponent<Text>().text = playerUnit.unitName + "恢復了" + 50 + "點血量";
+
+            StartCoroutine(EnemyIsDeadOrAlive());
+        }
+        #endregion
+
+        #region 02_藍藥水
+        if (ITEMNAME == "藍藥水")
+        {
+            playerUnit.BluePoison -= 1;
+
+            SkillPowerExpend(-1);
+
+            yield return new WaitForSeconds(1f);
+            BattleMessage.GetComponent<Text>().text = playerUnit.unitName + "恢復了" + 1 + "點能量";
+
+            StartCoroutine(EnemyIsDeadOrAlive());
+        }
+        #endregion
+
+        #region 03_秘藥
+        if (ITEMNAME == "秘藥")
+        {
+            playerUnit.BuffPoison -= 1;
+
+            playerUnit.atk += 15;
+            playerUnit.def += 10;
+            UPcount = 3;
+
+            yield return new WaitForSeconds(1f);
+            BattleMessage.GetComponent<Text>().text = playerUnit.unitName + "的攻擊、防禦大幅提升";
+
+            state = BattleState.ENEMYTURN;
+            StartCoroutine(EnemyTrun());
+        }
+        #endregion
+
+        #region 04_秘藥
+        if (ITEMNAME == "萬能藥")
+        {
+            playerUnit.UndebuffPoison -= 1;
+
+            yield return new WaitForSeconds(1f);
+            BattleMessage.GetComponent<Text>().text = playerUnit.unitName + "的負面狀態消失了";
+
+            state = BattleState.ENEMYTURN;
+            StartCoroutine(EnemyTrun());
+        }
+        #endregion
     }
 
     IEnumerator Run()    //玩家逃跑
@@ -833,11 +1017,15 @@ public class BattleSystem : MonoBehaviour
 
     private void SkillPowerExpend(int k)    //消耗能量點數後的能量顯示
     {
-        playerUnit.currySkillPower = playerUnit.currySkillPower - k;
+        playerUnit.currySkillPower -= k;
         int i = playerUnit.currySkillPower;
         if (i <= 0)
         {
             i = 0;
+        }
+        else if (i >= 5)
+        {
+            i = 5;
         }
         if (i == 0)
         {
@@ -888,7 +1076,7 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-    private void CanNatUse()
+    private void CanNatUse()    //無法使用技能或道具
     {
         SpriteRenderer c1spr = c1.GetComponent<SpriteRenderer>();
         SpriteRenderer c2spr = c2.GetComponent<SpriteRenderer>();
@@ -906,6 +1094,14 @@ public class BattleSystem : MonoBehaviour
         {
             c1.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1);
         }
+        else if (c1spr.sprite == spr31 && playerUnit.RedPoison != 0)
+        {
+            c1.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+        else if (c1spr.sprite == spr31 && playerUnit.RedPoison == 0)
+        {
+            c1.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1);
+        }
 
         if (c2spr.sprite == spr12)
         {
@@ -919,6 +1115,14 @@ public class BattleSystem : MonoBehaviour
         {
             c2.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1);
         }
+        else if (c2spr.sprite == spr32 && playerUnit.BluePoison != 0)
+        {
+            c2.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+        else if (c2spr.sprite == spr32 && playerUnit.BluePoison == 0)
+        {
+            c2.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1);
+        }
 
         if (c3spr.sprite == spr13)
         {
@@ -929,6 +1133,14 @@ public class BattleSystem : MonoBehaviour
             c3.GetComponent<SpriteRenderer>().color = Color.white;
         }
         else if (c3spr.sprite == spr23 && playerUnit.currySkillPower < 3)
+        {
+            c3.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1);
+        }
+        else if (c3spr.sprite == spr33 && playerUnit.BuffPoison != 0)
+        {
+            c3.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+        else if (c3spr.sprite == spr33 && playerUnit.BuffPoison == 0)
         {
             c3.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1);
         }
@@ -946,6 +1158,14 @@ public class BattleSystem : MonoBehaviour
             c4.GetComponent<SpriteRenderer>().color = Color.white;
         }
         else if (c4spr.sprite == spr24 && playerUnit.currySkillPower < 3)
+        {
+            c4.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1);
+        }
+        else if (c4spr.sprite == spr34 && playerUnit.UndebuffPoison != 0)
+        {
+            c4.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+        else if (c4spr.sprite == spr34 && playerUnit.UndebuffPoison == 0)
         {
             c4.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f, 1);
         }
